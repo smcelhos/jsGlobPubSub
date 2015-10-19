@@ -39,14 +39,14 @@ var topic = (function (glob) {
                 _patterns.keys.push(topic);
             }
             _patterns[topic].callbacks.push(callback);
-            return true;
+            return callback; // return callback as handle
         }
 
         if (!_topics.hasOwnProperty(topic)) {
             _topics[topic] = [];
         }
         _topics[topic].push(callback);
-        return true;
+        return callback;
     };
 
     var unsubscribe = function (topic, callback) {
