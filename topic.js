@@ -1,4 +1,4 @@
-(function () {
+var topic = (function () {
     'use strict';
 
     var _topics = {};
@@ -84,6 +84,7 @@
 
         return true;
     };
+
     var subscribe = function (topic, callback) {
         if (hasGlobbing(topic)) {
             // do something special so we remember what topics are globbed
@@ -106,10 +107,31 @@
     };
 
     var unsubscribe = function (topic, callback) {
+        var i,
+            len;
         if (hasGlobbing(topic)) {
-            // do whatever special clean up I need to do for
+            // do whatever special clean up I need to do for patterns
+            if (!_patterns[topic]) {
+                return false;
+            }
+            for (i = 0, len = _patterns[topic].callbacks.length; i < len; i++) {
+                if (_patterns[topic].callbacks[i] === callback) {
+                    _patterns[topic].callbacks.splice(i, 1);
+                    return true;
+                }
+            }
+        } else {
+            if (!_topics[topic]) {
+                return false;
+            }
+            for (i = 0, len = _topics[topic].length; i < len; i++) {
+                if (_topics[topic][i] === callback) {
+                    _topics[topic].splice(i, 1);
+                    return true;
+                }
+            }
         }
-
+        return false;
     };
 
     return {
